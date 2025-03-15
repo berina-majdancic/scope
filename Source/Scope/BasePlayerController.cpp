@@ -1,48 +1,59 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BasePlayerController.h"
+#include "BaseCharacter.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "InputAction.h"
+#include "InputActionValue.h"
 
 void ABasePlayerController::BeginPlay()
 {
     Super::BeginPlay();
-
-    APlayerController* PC = Cast<APlayerController>(GetController());
-    if (PC) {
-        if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer())) {
-            Subsystem->AddMappingContext(PlayerMappingContext, 0);
-        }
-    }
 }
-void ABasePlayerController::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ABasePlayerController::SetupInputComponent()
 {
-    Super::SetupPlayerInputComponent(PlayerInputComponent);
-    UEnhancedInputComponent* EnhancedInput = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+    Super::SetupInputComponent();
+    UEnhancedInputComponent* EnhancedInput = Cast<UEnhancedInputComponent>(this->InputComponent);
     if (EnhancedInput) {
+        UE_LOG(LogTemp, Display, TEXT("Binding"));
+
         EnhancedInput->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ABasePlayerController::Move);
         EnhancedInput->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABasePlayerController::Look);
-        EnhancedInput->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+        // EnhancedInput->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
         EnhancedInput->BindAction(SprintAction, ETriggerEvent::Started, this, &ABasePlayerController::Sprint);
         EnhancedInput->BindAction(SprintAction, ETriggerEvent::Completed, this, &ABasePlayerController::EndSprint);
     }
+    CurrentCharacter->GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 }
-
+void ABasePlayerController::OnPossess(APawn* InPawn)
+{
+    Super::OnPossess(InPawn);
+    CurrentCharacter = Cast<ABaseCharacter>(InPawn);
+    if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(this->GetLocalPlayer())) {
+        Subsystem->AddMappingContext(PlayerMappingContext, 0);
+        UE_LOG(LogTemp, Display, TEXT("Mapping C"));
+    }
+    SetupInputComponent();
+}
 void ABasePlayerController::Move(const FInputActionValue& Value)
 {
-    AddMovementInput(GetActorForwardVector() * Value.Get<FVector2D>().X);
-    AddMovementInput(GetActorRightVector() * Value.Get<FVector2D>().Y);
-}
+    UE_LOG(LogTemp, Display, TEXT("Move"));
 
+    CurrentCharacter->AddMovementInput(CurrentCharacter->GetActorForwardVector() * Value.Get<FVector2D>().X);
+    CurrentCharacter->AddMovementInput(CurrentCharacter->GetActorRightVector() * Value.Get<FVector2D>().Y);
+}
 void ABasePlayerController::Look(const FInputActionValue& Value)
 {
-    AddControllerPitchInput(-Value.Get<FVector>().Y);
-    AddControllerYawInput(Value.Get<FVector>().X);
+    CurrentCharacter->AddControllerPitchInput(-Value.Get<FVector>().Y);
+    CurrentCharacter->AddControllerYawInput(Value.Get<FVector>().X);
 }
-
 void ABasePlayerController::Sprint(const FInputActionValue& Value)
 {
-    GetCharacterMovement()->MaxWalkSpeed *= 2.0f;
+    CurrentCharacter->GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 }
 void ABasePlayerController::EndSprint(const FInputActionValue& Value)
 {
-    GetCharacterMovement()->MaxWalkSpeed /= 2.0f;
+    CurrentCharacter->GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 }
