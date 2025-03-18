@@ -10,6 +10,7 @@
 class UInputAction;
 class UInputMappingContext;
 class ABaseCharacter;
+class UUserWidget;
 struct FInputActionValue;
 /**
  *
@@ -22,16 +23,22 @@ protected:
 
 public:
     virtual void SetupInputComponent() override;
+    UFUNCTION(BlueprintPure)
+    bool IsDead() const;
+    UFUNCTION(BlueprintPure)
+    bool IsCrouching() const;
 
 protected:
     virtual void OnPossess(APawn* InPawn) override;
     void Move(const FInputActionValue& Value);
-
     void Look(const FInputActionValue& Value);
-
+    void Walk(const FInputActionValue& Value);
     void Sprint(const FInputActionValue& Value);
-
-    void EndSprint(const FInputActionValue& Value);
+    void Jump(const FInputActionValue& Value);
+    void Crouch(const FInputActionValue& Value);
+    void MainMenuGameplayDisplay(const FInputActionValue& Value);
+    void MainMenuStartDisplay();
+    AActor* FindMainMenuCamera();
 
 private:
     UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
@@ -41,13 +48,31 @@ private:
     UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputAction> JumpAction;
     UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UInputAction> SprintAction;
+    TObjectPtr<UInputAction> WalkAction;
+    UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UInputAction> CrouchAction;
     UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputMappingContext> PlayerMappingContext;
-
+    UPROPERTY(EditDefaultsOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
+    TSubclassOf<UUserWidget> StartMenuWidgetClass;
+    UPROPERTY(EditDefaultsOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
+    TSubclassOf<UUserWidget> GameplayMenuWidgetClass;
+    UPROPERTY()
     TObjectPtr<ABaseCharacter> CurrentCharacter;
+    UPROPERTY()
+    TObjectPtr<AActor> MainMenuCamera;
     UPROPERTY(EditAnywhere)
-    float WalkSpeed = 300;
+    float WalkSpeed = 200;
+    UPROPERTY(EditAnywhere)
+    float CrouchSpeed = 200;
     UPROPERTY(EditAnywhere)
     float RunSpeed = 500;
+    UPROPERTY(EditAnywhere)
+    float SensitivityY = 0.3;
+    UPROPERTY(EditAnywhere)
+    float SensitivityX = 0.2;
+    bool bIsDead = false;
+    bool bIsCrouching = false;
+    bool bInMainMenu = false;
+    TObjectPtr<UUserWidget> MainMenu;
 };
