@@ -6,7 +6,6 @@
 #include "GameFramework/PlayerController.h"
 
 #include "BasePlayerController.generated.h"
-
 class UInputAction;
 class UInputMappingContext;
 class ABaseCharacter;
@@ -40,6 +39,13 @@ protected:
     void MainMenuStartDisplay();
     AActor* FindMainMenuCamera();
 
+    UFUNCTION(BlueprintCallable)
+    void OnPlayGameClicked();
+    UFUNCTION(BlueprintCallable)
+    void OnQuitGameClicked();
+    UFUNCTION(BlueprintCallable)
+    void OnResumeClicked();
+
 private:
     UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputAction> MoveAction;
@@ -53,6 +59,8 @@ private:
     TObjectPtr<UInputAction> CrouchAction;
     UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputMappingContext> PlayerMappingContext;
+    UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UInputAction> MainMenuAction;
     UPROPERTY(EditDefaultsOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
     TSubclassOf<UUserWidget> StartMenuWidgetClass;
     UPROPERTY(EditDefaultsOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
@@ -61,6 +69,8 @@ private:
     TObjectPtr<ABaseCharacter> CurrentCharacter;
     UPROPERTY()
     TObjectPtr<AActor> MainMenuCamera;
+    TObjectPtr<UUserWidget> MainMenu;
+
     UPROPERTY(EditAnywhere)
     float WalkSpeed = 200;
     UPROPERTY(EditAnywhere)
@@ -74,5 +84,4 @@ private:
     bool bIsDead = false;
     bool bIsCrouching = false;
     bool bInMainMenu = false;
-    TObjectPtr<UUserWidget> MainMenu;
 };
