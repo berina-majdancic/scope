@@ -26,6 +26,7 @@ void ABasePlayerController::SetupInputComponent()
     if (EnhancedInput) {
 
         EnhancedInput->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ABasePlayerController::Move);
+        EnhancedInput->BindAction(ShootAction, ETriggerEvent::Triggered, this, &ABasePlayerController::Shoot);
         EnhancedInput->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABasePlayerController::Look);
         EnhancedInput->BindAction(JumpAction, ETriggerEvent::Started, this, &ABasePlayerController::Jump);
         EnhancedInput->BindAction(WalkAction, ETriggerEvent::Started, this, &ABasePlayerController::Walk);
@@ -57,6 +58,11 @@ void ABasePlayerController::Move(const FInputActionValue& Value)
 {
     CurrentCharacter->AddMovementInput(CurrentCharacter->GetActorForwardVector() * Value.Get<FVector2D>().X);
     CurrentCharacter->AddMovementInput(CurrentCharacter->GetActorRightVector() * Value.Get<FVector2D>().Y);
+}
+void ABasePlayerController::Shoot(const FInputActionValue& Value)
+{
+    CurrentCharacter->Shoot();
+    UE_LOG(LogTemp, Display, TEXT("Called"));
 }
 void ABasePlayerController::Look(const FInputActionValue& Value)
 {

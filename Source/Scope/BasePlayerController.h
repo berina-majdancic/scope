@@ -30,6 +30,7 @@ public:
 protected:
     virtual void OnPossess(APawn* InPawn) override;
     void Move(const FInputActionValue& Value);
+    void Shoot(const FInputActionValue& Value);
     void Look(const FInputActionValue& Value);
     void Walk(const FInputActionValue& Value);
     void Sprint(const FInputActionValue& Value);
@@ -49,6 +50,8 @@ protected:
 private:
     UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputAction> MoveAction;
+    UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UInputAction> ShootAction;
     UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputAction> LookAction;
     UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
