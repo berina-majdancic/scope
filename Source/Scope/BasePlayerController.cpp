@@ -10,6 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "InputAction.h"
 #include "InputActionValue.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Runtime/CinematicCamera/Public/CineCameraActor.h"
 #include <EngineUtils.h>
 
@@ -31,7 +32,7 @@ void ABasePlayerController::SetupInputComponent()
         EnhancedInput->BindAction(WalkAction, ETriggerEvent::Completed, this, &ABasePlayerController::Sprint);
         EnhancedInput->BindAction(CrouchAction, ETriggerEvent::Started, this, &ABasePlayerController::Crouch);
         EnhancedInput->BindAction(CrouchAction, ETriggerEvent::Completed, this, &ABasePlayerController::Sprint);
-        EnhancedInput->BindAction(MainMenuAction, ETriggerEvent::Triggered, this, &ABasePlayerController::MainMenuGameplayDisplay);
+        EnhancedInput->BindAction(MainMenuAction, ETriggerEvent::Started, this, &ABasePlayerController::MainMenuGameplayDisplay);
     }
 }
 bool ABasePlayerController::IsDead() const
@@ -86,17 +87,28 @@ void ABasePlayerController::Crouch(const FInputActionValue& Value)
 void ABasePlayerController::MainMenuGameplayDisplay(const FInputActionValue& Value)
 {
     if (!bInMainMenu) {
+        UE_LOG(LogTemp, Display, TEXT("In - False"));
+
         MainMenu = CreateWidget(this, GameplayMenuWidgetClass);
         if (MainMenu && MainMenuCamera) {
+            UE_LOG(LogTemp, Display, TEXT("Posses cam"));
             SetViewTargetWithBlend(MainMenuCamera);
             FInputModeUIOnly UIOnly;
             SetInputMode(UIOnly);
             if (MainMenu)
                 MainMenu->AddToViewport();
+            bInMainMenu = true;
         }
-        bInMainMenu = true;
         return;
     }
+    /* UE_LOG(LogTemp, Display, TEXT("In- True"));
+
+    bInMainMenu = false;
+    FInputModeGameOnly GameOnly;
+    SetInputMode(GameOnly);
+    if (MainMenu)
+        MainMenu->RemoveFromParent();
+    Possess(CurrentCharacter);*/
 }
 void ABasePlayerController::MainMenuStartDisplay()
 {
@@ -109,6 +121,32 @@ void ABasePlayerController::MainMenuStartDisplay()
         if (MainMenu)
             MainMenu->AddToViewport();
     }
+}
+
+void ABasePlayerController::OnPlayGameClicked()
+{
+    FInputModeGameOnly GameOnly;
+    SetInputMode(GameOnly);
+    Possess(CurrentCharacter);
+    bInMainMenu = false;
+    if (MainMenu)
+        MainMenu->RemoveFromParent();
+}
+
+void ABasePlayerController::OnQuitGameClicked()
+{
+    UKismetSystemLibrary::QuitGame(this, this, EQuitPreference::Quit, 0);
+}
+
+void ABasePlayerController::OnResumeClicked()
+{
+
+    FInputModeGameOnly GameOnly;
+    SetInputMode(GameOnly);
+    Possess(CurrentCharacter);
+    bInMainMenu = false;
+    if (MainMenu)
+        MainMenu->RemoveFromParent();
 }
 
 AActor* ABasePlayerController::FindMainMenuCamera()
