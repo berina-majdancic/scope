@@ -34,6 +34,21 @@ void ABaseCharacter::Shoot()
     }
 }
 
+FRotator ABaseCharacter::GetAimRotation()
+{
+    FVector StartLocation;
+    FRotator Rotation;
+    if (GetController()) {
+        GetController()->GetPlayerViewPoint(StartLocation, Rotation);
+        FHitResult HitResult;
+        FVector EndLocation = StartLocation + Rotation.Vector() * MaxBulletDistance;
+        GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_GameTraceChannel1);
+        FVector AimLocation = HitResult.ImpactPoint - GetActorLocation();
+        return (AimLocation.Rotation() - GetActorRotation());
+    }
+    return FRotator();
+}
+
 // Called when the game starts or when spawned
 void ABaseCharacter::BeginPlay()
 {
