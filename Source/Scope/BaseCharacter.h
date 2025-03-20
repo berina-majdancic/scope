@@ -15,7 +15,10 @@ public:
     ABaseCharacter();
     void Shoot();
     UFUNCTION(BlueprintCallable)
-    FRotator GetAimRotation();
+    FRotator GetAimRotation() const;
+    UFUNCTION(BlueprintCallable)
+    bool GetIsDead() const;
+    virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 protected:
     // Called when the game starts or when spawned
@@ -31,12 +34,19 @@ public:
 private:
     UPROPERTY(EditDefaultsOnly)
     TObjectPtr<UParticleSystem> MuzzleFlash;
+    void Die();
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     float MaxBulletDistance = 5000;
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     float FireRate = 0.1f;
-
+    UPROPERTY(EditDefaultsOnly, Category = "Health")
+    float Health = 100;
+    UPROPERTY(EditDefaultsOnly, Category = "Health")
+    float MaxHealth = 100;
+    UPROPERTY(EditDefaultsOnly, Category = "Health")
+    float BaseDamage = 30;
     FTimerHandle FireRateTimerHandle;
     bool bCanShoot = true;
+    bool bIsDead = false;
 };
