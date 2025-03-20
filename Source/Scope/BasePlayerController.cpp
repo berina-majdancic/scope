@@ -36,10 +36,6 @@ void ABasePlayerController::SetupInputComponent()
         EnhancedInput->BindAction(MainMenuAction, ETriggerEvent::Started, this, &ABasePlayerController::MainMenuGameplayDisplay);
     }
 }
-bool ABasePlayerController::IsDead() const
-{
-    return bIsDead;
-}
 bool ABasePlayerController::IsCrouching() const
 {
     return bIsCrouching;
