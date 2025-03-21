@@ -22,8 +22,7 @@ protected:
 
 public:
     virtual void SetupInputComponent() override;
-    UFUNCTION(BlueprintPure)
-    bool IsDead() const;
+
     UFUNCTION(BlueprintPure)
     bool IsCrouching() const;
 
@@ -68,11 +67,18 @@ private:
     TSubclassOf<UUserWidget> StartMenuWidgetClass;
     UPROPERTY(EditDefaultsOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
     TSubclassOf<UUserWidget> GameplayMenuWidgetClass;
+    UPROPERTY(EditDefaultsOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
+    TSubclassOf<UUserWidget> HUDWidgetClass;
     UPROPERTY()
     TObjectPtr<ABaseCharacter> CurrentCharacter;
     UPROPERTY()
     TObjectPtr<AActor> MainMenuCamera;
+    UPROPERTY()
+
     TObjectPtr<UUserWidget> MainMenu;
+    UPROPERTY()
+
+    TObjectPtr<UUserWidget> HUD;
 
     UPROPERTY(EditAnywhere)
     float WalkSpeed = 200;
@@ -84,7 +90,6 @@ private:
     float SensitivityY = 0.3;
     UPROPERTY(EditAnywhere)
     float SensitivityX = 0.2;
-    bool bIsDead = false;
     bool bIsCrouching = false;
     bool bInMainMenu = false;
 };
