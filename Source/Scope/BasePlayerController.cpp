@@ -88,8 +88,13 @@ void ABasePlayerController::Crouch(const FInputActionValue& Value)
 
 void ABasePlayerController::MainMenuGameplayDisplay(const FInputActionValue& Value)
 {
+    UE_LOG(LogTemp, Display, TEXT("In main menu "));
     if (!bInMainMenu) {
-        UE_LOG(LogTemp, Display, TEXT("In - False"));
+        UE_LOG(LogTemp, Display, TEXT("In main menu "));
+        UE_LOG(LogTemp, Display, TEXT("In main false "));
+
+        if (HUD)
+            HUD->RemoveFromParent();
 
         MainMenu = CreateWidget(this, GameplayMenuWidgetClass);
         if (MainMenu && MainMenuCamera) {
@@ -97,11 +102,9 @@ void ABasePlayerController::MainMenuGameplayDisplay(const FInputActionValue& Val
             SetViewTargetWithBlend(MainMenuCamera);
             FInputModeUIOnly UIOnly;
             SetInputMode(UIOnly);
-            if (MainMenu)
-                MainMenu->AddToViewport();
+            MainMenu->AddToViewport();
             bInMainMenu = true;
         }
-        return;
     }
     /* UE_LOG(LogTemp, Display, TEXT("In- True"));
 
@@ -127,12 +130,14 @@ void ABasePlayerController::MainMenuStartDisplay()
 
 void ABasePlayerController::OnPlayGameClicked()
 {
+    bInMainMenu = false;
     FInputModeGameOnly GameOnly;
     SetInputMode(GameOnly);
     Possess(CurrentCharacter);
-    bInMainMenu = false;
     if (MainMenu)
         MainMenu->RemoveFromParent();
+    HUD = CreateWidget(this, HUDWidgetClass);
+    HUD->AddToViewport();
 }
 
 void ABasePlayerController::OnQuitGameClicked()
@@ -142,11 +147,12 @@ void ABasePlayerController::OnQuitGameClicked()
 
 void ABasePlayerController::OnResumeClicked()
 {
-
+    HUD = CreateWidget(this, HUDWidgetClass);
+    HUD->AddToViewport();
+    bInMainMenu = false;
     FInputModeGameOnly GameOnly;
     SetInputMode(GameOnly);
     Possess(CurrentCharacter);
-    bInMainMenu = false;
     if (MainMenu)
         MainMenu->RemoveFromParent();
 }

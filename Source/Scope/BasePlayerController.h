@@ -67,11 +67,18 @@ private:
     TSubclassOf<UUserWidget> StartMenuWidgetClass;
     UPROPERTY(EditDefaultsOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
     TSubclassOf<UUserWidget> GameplayMenuWidgetClass;
+    UPROPERTY(EditDefaultsOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
+    TSubclassOf<UUserWidget> HUDWidgetClass;
     UPROPERTY()
     TObjectPtr<ABaseCharacter> CurrentCharacter;
     UPROPERTY()
     TObjectPtr<AActor> MainMenuCamera;
+    UPROPERTY()
+
     TObjectPtr<UUserWidget> MainMenu;
+    UPROPERTY()
+
+    TObjectPtr<UUserWidget> HUD;
 
     UPROPERTY(EditAnywhere)
     float WalkSpeed = 200;

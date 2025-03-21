@@ -32,11 +32,14 @@ void ABaseCharacter::Shoot()
     if (HitResult.bBlockingHit) {
         UE_LOG(LogTemp, Display, TEXT("Hit"));
         if (HitResult.GetActor() != this) {
+            if (MuzzleFlash)
+                UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleFlash, HitResult.ImpactPoint, Rotation);
             if (ABaseCharacter* Actor = Cast<ABaseCharacter>(HitResult.GetActor())) {
-                if (MuzzleFlash)
-                    UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleFlash, HitResult.ImpactPoint, Rotation);
                 FPointDamageEvent DamageEvent(BaseDamage, HitResult, -Rotation.Vector(), nullptr);
-                Actor->TakeDamage(BaseDamage, DamageEvent, GetController(), this);
+                if (HitResult.BoneName.ToString() == "head")
+                    Actor->TakeDamage(BaseDamage * 4, DamageEvent, GetController(), this);
+                else
+                    Actor->TakeDamage(BaseDamage, DamageEvent, GetController(), this);
             }
         }
     }
