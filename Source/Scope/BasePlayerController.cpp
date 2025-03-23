@@ -58,7 +58,6 @@ void ABasePlayerController::Move(const FInputActionValue& Value)
 void ABasePlayerController::Shoot(const FInputActionValue& Value)
 {
     CurrentCharacter->Shoot();
-    UE_LOG(LogTemp, Display, TEXT("Called"));
 }
 void ABasePlayerController::Look(const FInputActionValue& Value)
 {
@@ -106,14 +105,6 @@ void ABasePlayerController::MainMenuGameplayDisplay(const FInputActionValue& Val
             bInMainMenu = true;
         }
     }
-    /* UE_LOG(LogTemp, Display, TEXT("In- True"));
-
-    bInMainMenu = false;
-    FInputModeGameOnly GameOnly;
-    SetInputMode(GameOnly);
-    if (MainMenu)
-        MainMenu->RemoveFromParent();
-    Possess(CurrentCharacter);*/
 }
 void ABasePlayerController::MainMenuStartDisplay()
 {
