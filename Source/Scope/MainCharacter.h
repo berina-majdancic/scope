@@ -17,10 +17,11 @@ class SCOPE_API AMainCharacter : public ABaseCharacter {
     GENERATED_BODY()
 public:
     AMainCharacter();
+    virtual void BeginPlay() override;
 
 protected:
-    UPROPERTY(VisibleAnywhere, Category = "Character Mesh", meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleAnywhere, Category = "Character", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UCameraComponent> CameraComponent;
-    UPROPERTY(VisibleAnywhere, Category = "Character Mesh", meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleAnywhere, Category = "Character", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<USpringArmComponent> SpringArmComponent;
 };

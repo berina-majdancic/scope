@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Weapon.h"
 
 #include "BaseCharacter.generated.h"
 UCLASS()
@@ -18,6 +19,13 @@ public:
     FRotator GetAimRotation() const;
     UFUNCTION(BlueprintCallable)
     bool GetIsDead() const;
+
+    UFUNCTION(BlueprintCallable)
+    void ResetAmmo();
+    UFUNCTION(BlueprintImplementableEvent)
+    void PlayShootingAnimation();
+    UFUNCTION(BlueprintImplementableEvent)
+    void PlayReloadAnimation();
     virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 protected:
@@ -32,21 +40,20 @@ public:
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
-    UPROPERTY(EditDefaultsOnly)
-    TObjectPtr<UParticleSystem> MuzzleFlash;
     void Die();
-
+    UPROPERTY()
+    TObjectPtr<AWeapon> CurrentWeapon;
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    TSubclassOf<AWeapon> CurrentWeaponClass;
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     float MaxBulletDistance = 5000;
-    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    float FireRate = 0.1f;
+
     UPROPERTY(EditDefaultsOnly, Category = "Health")
     float Health = 100;
     UPROPERTY(EditDefaultsOnly, Category = "Health")
     float MaxHealth = 100;
-    UPROPERTY(EditDefaultsOnly, Category = "Health")
-    float BaseDamage = 30;
     FTimerHandle FireRateTimerHandle;
+
     bool bCanShoot = true;
     bool bIsDead = false;
 };
