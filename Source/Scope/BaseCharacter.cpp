@@ -11,17 +11,25 @@ ABaseCharacter::ABaseCharacter()
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
 }
-
+void ABaseCharacter::BeginPlay()
+{
+    Super::BeginPlay();
+    if (CurrentWeaponClass) {
+        CurrentWeapon = GetWorld()->SpawnActor<AWeapon>(CurrentWeaponClass);
+        CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("hand_r"));
+        CurrentWeapon->SetOwner(this);
+    }
+}
+void ABaseCharacter::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+}
+void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+    Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
 void ABaseCharacter::Shoot()
 {
-    if (!bCanShoot)
-        return;
-    bCanShoot = false;
-    GetWorldTimerManager().SetTimer(FireRateTimerHandle, [this]() { bCanShoot = true; }, FireRate, false);
-
-    if (MuzzleFlash)
-        UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, GetMesh(), TEXT("SMG_Barrel"));
-
     AController* OwnerController = GetController();
     FVector StartLocation;
     FRotator Rotation;
@@ -29,20 +37,7 @@ void ABaseCharacter::Shoot()
     FHitResult HitResult;
     FVector EndLocation = StartLocation + Rotation.Vector() * MaxBulletDistance;
     GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_GameTraceChannel1);
-    if (HitResult.bBlockingHit) {
-        UE_LOG(LogTemp, Display, TEXT("Hit"));
-        if (HitResult.GetActor() != this) {
-            if (MuzzleFlash)
-                UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleFlash, HitResult.ImpactPoint, Rotation);
-            if (ABaseCharacter* Actor = Cast<ABaseCharacter>(HitResult.GetActor())) {
-                FPointDamageEvent DamageEvent(BaseDamage, HitResult, -Rotation.Vector(), nullptr);
-                if (HitResult.BoneName.ToString() == "head")
-                    Actor->TakeDamage(BaseDamage * 4, DamageEvent, GetController(), this);
-                else
-                    Actor->TakeDamage(BaseDamage, DamageEvent, GetController(), this);
-            }
-        }
-    }
+    CurrentWeapon->Shoot(&HitResult);
 }
 FRotator ABaseCharacter::GetAimRotation() const
 {
@@ -64,6 +59,10 @@ bool ABaseCharacter::GetIsDead() const
     return bIsDead;
 }
 
+void ABaseCharacter::ResetAmmo()
+{
+    CurrentWeapon->Reload();
+}
 float ABaseCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
     Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
@@ -77,24 +76,6 @@ float ABaseCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, 
     return DamageTaken;
 }
 
-// Called when the game starts or when spawned
-void ABaseCharacter::BeginPlay()
-{
-    Super::BeginPlay();
-}
-
-// Called every frame
-void ABaseCharacter::Tick(float DeltaTime)
-{
-    Super::Tick(DeltaTime);
-}
-
-// Called to bind functionality to input
-void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-    Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
-
 void ABaseCharacter::Die()
 {
     if (bIsDead)
@@ -105,5 +86,4 @@ void ABaseCharacter::Die()
     GetCharacterMovement()->DisableMovement();
     GetController()->UnPossess();
     SetActorEnableCollision(false);
-    Destroy();
 }

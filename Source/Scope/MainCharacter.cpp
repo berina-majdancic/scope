@@ -2,6 +2,7 @@
 
 #include "MainCharacter.h"
 #include "Camera/CameraComponent.h"
+#include "Components/PoseableMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 AMainCharacter::AMainCharacter()
@@ -10,4 +11,9 @@ AMainCharacter::AMainCharacter()
     SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArm Component");
     SpringArmComponent->SetupAttachment(RootComponent);
     CameraComponent->SetupAttachment(SpringArmComponent);
+}
+
+void AMainCharacter::BeginPlay()
+{
+    Super::BeginPlay();
 }
