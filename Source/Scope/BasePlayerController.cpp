@@ -33,6 +33,7 @@ void ABasePlayerController::SetupInputComponent()
         EnhancedInput->BindAction(WalkAction, ETriggerEvent::Completed, this, &ABasePlayerController::Sprint);
         EnhancedInput->BindAction(CrouchAction, ETriggerEvent::Started, this, &ABasePlayerController::Crouch);
         EnhancedInput->BindAction(CrouchAction, ETriggerEvent::Completed, this, &ABasePlayerController::Sprint);
+        EnhancedInput->BindAction(ReloadAction, ETriggerEvent::Completed, this, &ABasePlayerController::Reload);
         EnhancedInput->BindAction(MainMenuAction, ETriggerEvent::Started, this, &ABasePlayerController::MainMenuGameplayDisplay);
     }
 }
@@ -83,6 +84,11 @@ void ABasePlayerController::Crouch(const FInputActionValue& Value)
 {
     CurrentCharacter->GetCharacterMovement()->MaxWalkSpeed = CrouchSpeed;
     bIsCrouching = !bIsCrouching;
+}
+
+void ABasePlayerController::Reload(const FInputActionValue& Value)
+{
+    CurrentCharacter->Reload();
 }
 
 void ABasePlayerController::MainMenuGameplayDisplay(const FInputActionValue& Value)
