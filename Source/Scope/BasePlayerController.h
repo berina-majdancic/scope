@@ -35,6 +35,7 @@ protected:
     void Sprint(const FInputActionValue& Value);
     void Jump(const FInputActionValue& Value);
     void Crouch(const FInputActionValue& Value);
+    void Reload(const FInputActionValue& Value);
     void MainMenuGameplayDisplay(const FInputActionValue& Value);
     void MainMenuStartDisplay();
     AActor* FindMainMenuCamera();
@@ -60,6 +61,8 @@ private:
     UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputAction> CrouchAction;
     UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UInputAction> ReloadAction;
+    UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputMappingContext> PlayerMappingContext;
     UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputAction> MainMenuAction;
@@ -74,10 +77,8 @@ private:
     UPROPERTY()
     TObjectPtr<AActor> MainMenuCamera;
     UPROPERTY()
-
     TObjectPtr<UUserWidget> MainMenu;
     UPROPERTY()
-
     TObjectPtr<UUserWidget> HUD;
 
     UPROPERTY(EditAnywhere)
