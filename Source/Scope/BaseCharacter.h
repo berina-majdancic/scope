@@ -14,6 +14,7 @@ class SCOPE_API ABaseCharacter : public ACharacter {
 public:
     // Sets default values for this character's properties
     ABaseCharacter();
+    virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
     void Shoot();
     UFUNCTION(BlueprintCallable)
     FRotator GetAimRotation() const;
@@ -21,12 +22,12 @@ public:
     bool GetIsDead() const;
 
     UFUNCTION(BlueprintCallable)
-    void ResetAmmo();
+    void Reload();
     UFUNCTION(BlueprintImplementableEvent)
     void PlayShootingAnimation();
     UFUNCTION(BlueprintImplementableEvent)
-    void PlayReloadAnimation();
-    virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+    void PlayReloadAnimation(float ReloadTime);
+    AWeapon* GetCurrentWeapon() const;
 
 protected:
     // Called when the game starts or when spawned
