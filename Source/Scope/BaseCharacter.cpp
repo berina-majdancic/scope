@@ -1,17 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BaseCharacter.h"
+#include "BasePlayerController.h"
 #include "Engine/DamageEvents.h"
-#include "Kismet\GameplayStatics.h"
-
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet\GameplayStatics.h"
 ABaseCharacter::ABaseCharacter()
 {
     PrimaryActorTick.bCanEverTick = true;
-}
-AWeapon* ABaseCharacter::GetCurrentWeapon() const
-{
-    return CurrentWeapon;
 }
 void ABaseCharacter::BeginPlay()
 {
@@ -20,7 +16,11 @@ void ABaseCharacter::BeginPlay()
         CurrentWeapon = GetWorld()->SpawnActor<AWeapon>(CurrentWeaponClass);
         CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("hand_r"));
         CurrentWeapon->SetOwner(this);
+        CurrentWeapon->UpdateAmmo();
     }
+    if (GetController())
+        BasePlayerController = Cast<ABasePlayerController>(GetController());
+    UpdateHealthHUD();
 }
 void ABaseCharacter::Tick(float DeltaTime)
 {
@@ -30,10 +30,18 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
+AWeapon* ABaseCharacter::GetCurrentWeapon() const
+{
+    return CurrentWeapon;
+}
 void ABaseCharacter::Shoot()
 {
-
     CurrentWeapon->Shoot();
+}
+void ABaseCharacter::UpdateHealthHUD()
+{
+    if (BasePlayerController)
+        BasePlayerController->UpdateHealth(Health, MaxHealth);
 }
 FRotator ABaseCharacter::GetAimRotation() const
 {
@@ -64,8 +72,10 @@ float ABaseCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, 
     Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
     float DamageTaken = FMath::Min(Health, Damage);
     UE_LOG(LogTemp, Display, TEXT("Damage Taken! %f"), DamageTaken);
-    if (DamageCauser != this)
+    if (DamageCauser != this) {
         Health -= DamageTaken;
+        UpdateHealthHUD();
+    }
     if (Health == 0) {
         Die();
         UE_LOG(LogTemp, Display, TEXT("Dead!"));
