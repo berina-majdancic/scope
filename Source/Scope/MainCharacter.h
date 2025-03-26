@@ -20,8 +20,6 @@ public:
     virtual void BeginPlay() override;
 
 protected:
-    UPROPERTY(VisibleAnywhere, Category = "Character", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UCameraComponent> CameraComponent;
     // UPROPERTY(VisibleAnywhere, Category = "Character", meta = (AllowPrivateAccess = "true"))
     // TObjectPtr<USpringArmComponent> SpringArmComponent;
 };
