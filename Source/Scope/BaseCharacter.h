@@ -7,6 +7,7 @@
 #include "Weapon.h"
 
 #include "BaseCharacter.generated.h"
+class ABasePlayerController;
 UCLASS()
 class SCOPE_API ABaseCharacter : public ACharacter {
     GENERATED_BODY()
@@ -27,6 +28,7 @@ public:
     void PlayShootingAnimation();
     UFUNCTION(BlueprintImplementableEvent)
     void PlayReloadAnimation(float ReloadTime);
+    void UpdateHealthHUD();
     AWeapon* GetCurrentWeapon() const;
 
 protected:
@@ -41,14 +43,13 @@ public:
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
-    void Die();
     UPROPERTY()
     TObjectPtr<AWeapon> CurrentWeapon;
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     TSubclassOf<AWeapon> CurrentWeaponClass;
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     float MaxBulletDistance = 5000;
-
+    TObjectPtr<ABasePlayerController> BasePlayerController;
     UPROPERTY(EditDefaultsOnly, Category = "Health")
     float Health = 100;
     UPROPERTY(EditDefaultsOnly, Category = "Health")
@@ -57,4 +58,5 @@ private:
 
     bool bCanShoot = true;
     bool bIsDead = false;
+    void Die();
 };

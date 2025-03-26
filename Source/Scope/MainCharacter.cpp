@@ -7,10 +7,8 @@
 
 AMainCharacter::AMainCharacter()
 {
-    CameraComponent = CreateDefaultSubobject<UCameraComponent>("Camera Component");
     // SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArm Component");
     // SpringArmComponent->SetupAttachment(RootComponent);
-    CameraComponent->SetupAttachment(GetMesh(), TEXT("head"));
 }
 
 void AMainCharacter::BeginPlay()

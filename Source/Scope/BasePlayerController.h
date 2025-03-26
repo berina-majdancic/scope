@@ -11,6 +11,7 @@ class UInputMappingContext;
 class ABaseCharacter;
 class UUserWidget;
 struct FInputActionValue;
+class AHUDClass;
 /**
  *
  */
@@ -25,6 +26,8 @@ public:
 
     UFUNCTION(BlueprintPure)
     bool IsCrouching() const;
+    void UpdateAmmo(float CurrentAmmo, float MaxAmmo, float LeftAmmo);
+    void UpdateHealth(float CurrentHealth, float MaxHealth);
 
 protected:
     virtual void OnPossess(APawn* InPawn) override;
@@ -36,8 +39,8 @@ protected:
     void Jump(const FInputActionValue& Value);
     void Crouch(const FInputActionValue& Value);
     void Reload(const FInputActionValue& Value);
-    void MainMenuGameplayDisplay(const FInputActionValue& Value);
-    void MainMenuStartDisplay();
+    void PauseMenuSwitch(const FInputActionValue& Value);
+    void MainMenuDisplay();
     AActor* FindMainMenuCamera();
 
     UFUNCTION(BlueprintCallable)
@@ -66,20 +69,13 @@ private:
     TObjectPtr<UInputMappingContext> PlayerMappingContext;
     UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputAction> MainMenuAction;
-    UPROPERTY(EditDefaultsOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
-    TSubclassOf<UUserWidget> StartMenuWidgetClass;
-    UPROPERTY(EditDefaultsOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
-    TSubclassOf<UUserWidget> GameplayMenuWidgetClass;
-    UPROPERTY(EditDefaultsOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
-    TSubclassOf<UUserWidget> HUDWidgetClass;
+
     UPROPERTY()
     TObjectPtr<ABaseCharacter> CurrentCharacter;
     UPROPERTY()
     TObjectPtr<AActor> MainMenuCamera;
     UPROPERTY()
-    TObjectPtr<UUserWidget> MainMenu;
-    UPROPERTY()
-    TObjectPtr<UUserWidget> HUD;
+    TObjectPtr<AHUDClass> HUD;
 
     UPROPERTY(EditAnywhere)
     float WalkSpeed = 200;
