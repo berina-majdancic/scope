@@ -2,12 +2,11 @@
 
 #include "BasePlayerController.h"
 #include "BaseCharacter.h"
-
-#include "Blueprint/UserWidget.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "HUDClass.h"
 #include "InputAction.h"
 #include "InputActionValue.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -17,7 +16,8 @@
 void ABasePlayerController::BeginPlay()
 {
     Super::BeginPlay();
-    MainMenuStartDisplay();
+    HUD = Cast<AHUDClass>(GetHUD());
+    MainMenuDisplay();
 }
 void ABasePlayerController::SetupInputComponent()
 {
@@ -34,12 +34,22 @@ void ABasePlayerController::SetupInputComponent()
         EnhancedInput->BindAction(CrouchAction, ETriggerEvent::Started, this, &ABasePlayerController::Crouch);
         EnhancedInput->BindAction(CrouchAction, ETriggerEvent::Completed, this, &ABasePlayerController::Sprint);
         EnhancedInput->BindAction(ReloadAction, ETriggerEvent::Completed, this, &ABasePlayerController::Reload);
-        EnhancedInput->BindAction(MainMenuAction, ETriggerEvent::Started, this, &ABasePlayerController::MainMenuGameplayDisplay);
+        EnhancedInput->BindAction(MainMenuAction, ETriggerEvent::Started, this, &ABasePlayerController::PauseMenuSwitch);
     }
 }
 bool ABasePlayerController::IsCrouching() const
 {
     return bIsCrouching;
+}
+void ABasePlayerController::UpdateAmmo(float CurrentAmmo, float MaxAmmo, float LeftAmmo)
+{
+    if (HUD)
+        HUD->UpdateAmmo(CurrentAmmo, MaxAmmo, LeftAmmo);
+}
+void ABasePlayerController::UpdateHealth(float CurrentHealth, float MaxHealth)
+{
+    if (HUD)
+        HUD->UpdateHealth(CurrentHealth, MaxHealth);
 }
 void ABasePlayerController::OnPossess(APawn* InPawn)
 {
@@ -91,69 +101,56 @@ void ABasePlayerController::Reload(const FInputActionValue& Value)
     CurrentCharacter->Reload();
 }
 
-void ABasePlayerController::MainMenuGameplayDisplay(const FInputActionValue& Value)
+void ABasePlayerController::PauseMenuSwitch(const FInputActionValue& Value)
 {
-    UE_LOG(LogTemp, Display, TEXT("In main menu "));
     if (!bInMainMenu) {
-        UE_LOG(LogTemp, Display, TEXT("In main menu "));
-        UE_LOG(LogTemp, Display, TEXT("In main false "));
-
-        if (HUD)
-            HUD->RemoveFromParent();
-
-        MainMenu = CreateWidget(this, GameplayMenuWidgetClass);
-        if (MainMenu && MainMenuCamera) {
-            UE_LOG(LogTemp, Display, TEXT("Posses cam"));
+        if (MainMenuCamera) {
             SetViewTargetWithBlend(MainMenuCamera);
             FInputModeUIOnly UIOnly;
             SetInputMode(UIOnly);
-            MainMenu->AddToViewport();
             bInMainMenu = true;
+            if (HUD) {
+                HUD->OpenPauseMenu();
+                HUD->HideHUD();
+            }
         }
     }
 }
-void ABasePlayerController::MainMenuStartDisplay()
+void ABasePlayerController::MainMenuDisplay()
 {
-    MainMenu = CreateWidget(this, StartMenuWidgetClass);
     MainMenuCamera = FindMainMenuCamera();
-    if (MainMenu && MainMenuCamera) {
+    if (MainMenuCamera) {
         SetViewTargetWithBlend(MainMenuCamera);
         FInputModeUIOnly UIOnly;
         SetInputMode(UIOnly);
-        if (MainMenu)
-            MainMenu->AddToViewport();
     }
 }
-
 void ABasePlayerController::OnPlayGameClicked()
 {
     bInMainMenu = false;
     FInputModeGameOnly GameOnly;
     SetInputMode(GameOnly);
     Possess(CurrentCharacter);
-    if (MainMenu)
-        MainMenu->RemoveFromParent();
-    HUD = CreateWidget(this, HUDWidgetClass);
-    HUD->AddToViewport();
+    if (HUD) {
+        HUD->CloseMainMenu();
+        HUD->ShowHUD();
+    }
 }
-
 void ABasePlayerController::OnQuitGameClicked()
 {
     UKismetSystemLibrary::QuitGame(this, this, EQuitPreference::Quit, 0);
 }
-
 void ABasePlayerController::OnResumeClicked()
 {
-    HUD = CreateWidget(this, HUDWidgetClass);
-    HUD->AddToViewport();
     bInMainMenu = false;
     FInputModeGameOnly GameOnly;
     SetInputMode(GameOnly);
     Possess(CurrentCharacter);
-    if (MainMenu)
-        MainMenu->RemoveFromParent();
+    if (HUD) {
+        HUD->ClosePauseMenu();
+        HUD->ShowHUD();
+    }
 }
-
 AActor* ABasePlayerController::FindMainMenuCamera()
 {
     for (ACineCameraActor* Camera : TActorRange<ACineCameraActor>(GetWorld())) {
