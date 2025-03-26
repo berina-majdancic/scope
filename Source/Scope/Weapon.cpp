@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Weapon.h"
 #include "BaseCharacter.h"
+#include "BasePlayerController.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/DamageEvents.h"
 #include "Kismet/GameplayStatics.h"
@@ -17,8 +17,8 @@ AWeapon::AWeapon()
     Muzzle = CreateDefaultSubobject<USceneComponent>("Muzzle");
     Muzzle->SetupAttachment(GunMesh);
     Ammo = MaxAmmo;
-    CharacterOwner = Cast<ABaseCharacter>(GetOwner());
     InitializeDamageMap();
+    CharacterOwner = Cast<ABaseCharacter>(GetOwner());
 }
 
 void AWeapon::Shoot()
@@ -26,13 +26,14 @@ void AWeapon::Shoot()
     if (!bCanShoot || bIsReloading || !AmmmoCapacity)
         return;
     HitResult = Trace();
-    if (!CharacterOwner)
-        CharacterOwner = Cast<ABaseCharacter>(GetOwner());
     if (Ammo <= 0) {
         Reload();
         return;
     }
     Ammo--;
+    UpdateAmmo();
+    if (!CharacterOwner)
+        return;
     AddRecoil();
     bCanShoot = false;
     GetWorldTimerManager().SetTimer(FireRateTimerHandle, [this]() { bCanShoot = true; }, FireRate, false);
@@ -49,11 +50,7 @@ void AWeapon::FinishReload()
 {
     Ammo = MaxAmmo;
     bIsReloading = false;
-}
-
-void AWeapon::BeginPlay()
-{
-    Super::BeginPlay();
+    UpdateAmmo();
 }
 
 void AWeapon::Tick(float DeltaTime)
@@ -62,10 +59,31 @@ void AWeapon::Tick(float DeltaTime)
     RecoilOffset = UKismetMathLibrary::RInterpTo(RecoilOffset, FRotator::ZeroRotator, DeltaTime, RecoverySpeed);
     if (RecoilOffset == FRotator::ZeroRotator)
         TargetRecoilOffset = FRotator::ZeroRotator;
-    if (!CharacterOwner)
-        CharacterOwner = Cast<ABaseCharacter>(GetOwner());
-    CharacterOwner->AddControllerPitchInput(-RecoilOffset.Pitch);
-    CharacterOwner->AddControllerYawInput(RecoilOffset.Yaw);
+    if (CharacterOwner) {
+        CharacterOwner->AddControllerPitchInput(-RecoilOffset.Pitch);
+        CharacterOwner->AddControllerYawInput(RecoilOffset.Yaw);
+    }
+}
+
+void AWeapon::UpdateAmmo()
+{
+    if (!BasePlayerController)
+        GetBasePlayerController();
+    if (BasePlayerController) {
+        UE_LOG(LogTemp, Display, TEXT("UpdatedAmmo"));
+        BasePlayerController->UpdateAmmo(Ammo, MaxAmmo, AmmmoCapacity);
+    } else
+        UE_LOG(LogTemp, Warning, TEXT("No Controller"));
+}
+
+void AWeapon::GetBasePlayerController()
+{
+    if (!BasePlayerController) {
+        if (!CharacterOwner)
+            CharacterOwner = Cast<ABaseCharacter>(GetOwner());
+        if (CharacterOwner)
+            BasePlayerController = Cast<ABasePlayerController>(CharacterOwner->GetController());
+    }
 }
 
 void AWeapon::InitializeDamageMap()
@@ -87,25 +105,25 @@ void AWeapon::InitializeDamageMap()
 
 void AWeapon::Reload()
 {
+    if (Ammo == MaxAmmo)
+        return;
     bIsReloading = true;
     if (CharacterOwner)
         CharacterOwner->PlayReloadAnimation(ReloadTime);
-    AmmmoCapacity -= MaxAmmo + Ammo;
+    AmmmoCapacity += -MaxAmmo + Ammo;
     GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &AWeapon::FinishReload, ReloadTime, false);
 }
 
 void AWeapon::AddRecoil()
 {
     if (!CharacterOwner)
-        CharacterOwner = Cast<ABaseCharacter>(GetOwner());
-    if (!CharacterOwner)
         return;
 
     float PitchRecoil = FMath::RandRange(RecoilPitchMin * 0.1, RecoilPitchMax * 0.1);
     float YawRecoil = FMath::RandRange(RecoilYawMin * 0.1, RecoilYawMax * 0.1);
 
-    TargetRecoilOffset.Pitch = FMath::Clamp(TargetRecoilOffset.Pitch + PitchRecoil, -MaxRecoil.Pitch, MaxRecoil.Pitch);
-    TargetRecoilOffset.Yaw = FMath::Clamp(TargetRecoilOffset.Yaw + YawRecoil, -MaxRecoil.Yaw, MaxRecoil.Yaw);
+    TargetRecoilOffset.Pitch = FMath::Clamp(TargetRecoilOffset.Pitch + PitchRecoil, -MaxRecoil.Pitch * 0.1, MaxRecoil.Pitch * 0.1);
+    TargetRecoilOffset.Yaw = FMath::Clamp(TargetRecoilOffset.Yaw + YawRecoil, -MaxRecoil.Yaw * 0.1, MaxRecoil.Yaw * 0.1);
 
     RecoilOffset = UKismetMathLibrary::RInterpTo(RecoilOffset, TargetRecoilOffset, GetWorld()->GetDeltaSeconds(), RecoilSpeed);
 }
