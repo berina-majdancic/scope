@@ -1,4 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -7,6 +6,8 @@
 #include "Weapon.generated.h"
 class UStaticMeshComponent;
 class ABaseCharacter;
+class ABasePlayerController;
+
 UCLASS()
 class SCOPE_API AWeapon : public AActor {
     GENERATED_BODY()
@@ -15,8 +16,9 @@ public:
     AWeapon();
     void Shoot();
     void Reload();
-    void BeginPlay() override;
     void Tick(float DeltaTime) override;
+    void UpdateAmmo();
+    void GetBasePlayerController();
 
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
@@ -31,7 +33,6 @@ protected:
     TObjectPtr<UParticleSystem> HitEffect;
     UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
     float MaxBulletDistance = 100000.0f;
-
     UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
     float FireRate = 0.2f;
     UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
@@ -57,7 +58,7 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Recoil", meta = (AllowPrivateAccess = "true"))
     float RecoilYawMax = 1.0f;
     UPROPERTY(EditDefaultsOnly, Category = "Recoil", meta = (AllowPrivateAccess = "true"))
-    float RecoverySpeed = 5.0f;
+    float RecoverySpeed = 10.0f;
     UPROPERTY(EditDefaultsOnly, Category = "Recoil", meta = (AllowPrivateAccess = "true"))
     float RecoilSpeed = 2.0f;
     UPROPERTY(EditDefaultsOnly, Category = "Recoil", meta = (AllowPrivateAccess = "true"))
@@ -73,6 +74,7 @@ private:
     FHitResult HitResult;
     UPROPERTY()
     ABaseCharacter* CharacterOwner;
+    ABasePlayerController* BasePlayerController;
     TMap<FString, float> DamageMap;
 
     void DamageEnemy();
