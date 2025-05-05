@@ -1,12 +1,49 @@
 # Scope
-A sci-fi themed game built in Unreal Engine 5.
+# 🎯 Scope — UE5 First-Person Shooter Project
+
+**Scope** is a C++-driven first-person shooter made in **Unreal Engine 5**, where players defend their home district from invading **robo-humans** who seek to convert it into a dystopian "smart city." With a strong focus on gameplay systems, AI, and animation, *Scope* is both a technical showcase and a playable experience in development.
+
+---
+
+## 🧠 Game Concept
+
+In a future overrun by automation, you’re the last resistance in a free district.  
+Robo-humans are coming to “upgrade” your home into a controlled smart zone—unless you stop them first.
+
+**Protect your district. Disrupt their system.**
+
+## 🛠️ Current Features
+
+-  **Main Menu** – Start and exit the game 
+-  **Shooting Mechanics** – Bullet physics, hit detection, recoil, Niagara effects  
+-  **Basic AI** – Patrol, detect, and attack behaviors  
+-  **Health & Hit Zones System** – Detects and reacts to:
+  - **Headshots** – high damage  
+  - **Body shots** – standard damage  
+  - **Leg shots** – reduced damage  
+-  **Character Controller** – Supports:
+  - Walking, running, crouching, jumping  
+  - Smooth **turn-in-place** logic and animations  
+-  **Custom Animation Blueprint** – Dynamic blendspaces and state machines configured for all of the above, no root motion
+-  **HUD** – Crosshair, health, and ammo display  
+-  **SciFi Map** – A free asset customized to fit the project needs
+-  **Death** - AI and Player death
 
 🛠️ Current Features
 - Main Menu
-- Basic Movement made with animations blendspaces and state machines
+- Movement made with animations blendspaces and state machines
 - Shooting
 - Damage
 - Death
 - AI - follow the player and shoot him
 - HUD
 - SciFi Environment
+
+🧪 Coming soon:
+-  Smarter AI
+-  Inverse Kinematics
+-  Weapon switching and inventory system
+-  Currency and buying system
+-  Explosion device planting and defusing  
+-  Sound
+-  Online multiplayer 
