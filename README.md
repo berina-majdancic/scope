@@ -4,11 +4,12 @@
 **Scope** is a C++-driven first-person shooter made in **Unreal Engine 5**, where players defend their home district from invading **robo-humans** who seek to convert it into a dystopian "smart city." With a strong focus on gameplay systems, AI, and animation, *Scope* is both a technical showcase and a playable experience in development.
 
 ---
-
+Map Showcase Video:
+[![Watch the video](https://github.com/user-attachments/assets/9983440e-6008-4a5d-a4b0-3cb1af5f4f1d)](https://www.youtube.com/watch?v=PsPNZ6scga8)
 ## 🧠 Game Concept
 
 In a future overrun by automation, you’re the last resistance in a free district.  
-Robo-humans are coming to “upgrade” your home into a controlled smart zone—unless you stop them first.
+Robots are coming to “upgrade” your home into a controlled smart city—unless you stop them first.
 
 **Protect your district. Disrupt their system.**
 
@@ -27,7 +28,7 @@ Robo-humans are coming to “upgrade” your home into a controlled smart zone�
 -  **Custom Animation Blueprint** – Dynamic blendspaces and state machines configured for all of the above, no root motion
 -  **HUD** – Crosshair, health, and ammo display  
 -  **SciFi Map** – A free asset customized to fit the project needs
--  **Death** - AI and Player death
+-  **Weapon Fire Rate**
 
 🛠️ Current Features
 - Main Menu
