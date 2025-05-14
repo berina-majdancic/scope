@@ -23,7 +23,7 @@ AWeapon::AWeapon()
 
 void AWeapon::Shoot()
 {
-    if (!bCanShoot || bIsReloading || !AmmmoCapacity)
+    if (!bCanShoot || bIsReloading || !AmmoCapacity)
         return;
     HitResult = Trace();
     if (Ammo <= 0) {
@@ -71,7 +71,7 @@ void AWeapon::UpdateAmmo()
         GetBasePlayerController();
     if (BasePlayerController) {
         UE_LOG(LogTemp, Display, TEXT("UpdatedAmmo"));
-        BasePlayerController->UpdateAmmo(Ammo, MaxAmmo, AmmmoCapacity);
+        BasePlayerController->UpdateAmmo(Ammo, MaxAmmo, AmmoCapacity);
     } else
         UE_LOG(LogTemp, Warning, TEXT("No Controller"));
 }
@@ -105,12 +105,12 @@ void AWeapon::InitializeDamageMap()
 
 void AWeapon::Reload()
 {
-    if (Ammo == MaxAmmo)
+    if (Ammo == MaxAmmo || bIsReloading)
         return;
     bIsReloading = true;
     if (CharacterOwner)
         CharacterOwner->PlayReloadAnimation(ReloadTime);
-    AmmmoCapacity += -MaxAmmo + Ammo;
+    AmmoCapacity = AmmoCapacity - (MaxAmmo - Ammo);
     GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &AWeapon::FinishReload, ReloadTime, false);
 }
 
