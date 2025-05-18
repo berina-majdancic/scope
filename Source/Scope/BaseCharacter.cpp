@@ -14,11 +14,19 @@ ABaseCharacter::ABaseCharacter()
 void ABaseCharacter::BeginPlay()
 {
     Super::BeginPlay();
-    if (CurrentWeaponClass) {
-        CurrentWeapon = GetWorld()->SpawnActor<AWeapon>(CurrentWeaponClass);
-        CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("hand_r"));
-        CurrentWeapon->SetOwner(this);
-        CurrentWeapon->UpdateAmmo();
+    if (PrimaryWeaponClass) {
+        PrimaryWeapon = GetWorld()->SpawnActor<AWeapon>(PrimaryWeaponClass);
+        PrimaryWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("hand_r"));
+        PrimaryWeapon->SetOwner(this);
+        PrimaryWeapon->UpdateAmmo();
+        PrimaryWeapon->SetHidden(true);
+        bIsPrimaryEquipped = false;
+    }
+    if (SecondaryWeaponClass) {
+        SecondaryWeapon = GetWorld()->SpawnActor<AWeapon>(SecondaryWeaponClass);
+        SecondaryWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("hand_r"));
+        SecondaryWeapon->SetOwner(this);
+        SecondaryWeapon->UpdateAmmo();
     }
     if (GetController())
         BasePlayerController = Cast<ABasePlayerController>(GetController());
@@ -32,13 +40,19 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
-AWeapon* ABaseCharacter::GetCurrentWeapon() const
+AWeapon* ABaseCharacter::GetPrimaryWeapon() const
 {
-    return CurrentWeapon;
+    return PrimaryWeapon;
 }
 void ABaseCharacter::Shoot()
 {
-    CurrentWeapon->Shoot();
+    if (bIsPrimaryEquipped) {
+        if (PrimaryWeapon)
+            PrimaryWeapon->Shoot();
+    } else {
+        if (SecondaryWeapon)
+            SecondaryWeapon->Shoot();
+    }
 }
 void ABaseCharacter::UpdateHealthHUD()
 {
@@ -67,8 +81,31 @@ bool ABaseCharacter::GetIsDead() const
 
 void ABaseCharacter::Reload()
 {
-    CurrentWeapon->Reload();
+    if (bIsPrimaryEquipped) {
+        if (PrimaryWeapon)
+            PrimaryWeapon->Reload();
+    } else {
+        if (SecondaryWeapon)
+            SecondaryWeapon->Reload();
+    }
 }
+void ABaseCharacter::setIsShooting(bool isShooting)
+{
+    bIsShooting = isShooting;
+}
+void ABaseCharacter::setIsReloading(bool isReloading)
+{
+    bIsReloading = isReloading;
+}
+bool ABaseCharacter::getIsShooting()
+{
+    return bIsShooting;
+}
+bool ABaseCharacter::getIsReloading()
+{
+    return bIsReloading;
+}
+
 float ABaseCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
     Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);

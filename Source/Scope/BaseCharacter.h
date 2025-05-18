@@ -28,8 +28,17 @@ public:
     void PlayShootingAnimation();
     UFUNCTION(BlueprintImplementableEvent)
     void PlayReloadAnimation(float ReloadTime);
+    UFUNCTION(BlueprintCallable)
+    void setIsShooting(bool isShooting);
+    UFUNCTION(BlueprintCallable)
+    void setIsReloading(bool isReloading);
+    UFUNCTION(BlueprintCallable)
+    bool getIsShooting();
+    UFUNCTION(BlueprintCallable)
+    bool getIsReloading();
+
     void UpdateHealthHUD();
-    AWeapon* GetCurrentWeapon() const;
+    AWeapon* GetPrimaryWeapon() const;
 
 protected:
     // Called when the game starts or when spawned
@@ -44,9 +53,13 @@ public:
 
 private:
     UPROPERTY()
-    TObjectPtr<AWeapon> CurrentWeapon;
+    TObjectPtr<AWeapon> PrimaryWeapon;
+    UPROPERTY()
+    TObjectPtr<AWeapon> SecondaryWeapon;
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    TSubclassOf<AWeapon> CurrentWeaponClass;
+    TSubclassOf<AWeapon> PrimaryWeaponClass;
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    TSubclassOf<AWeapon> SecondaryWeaponClass;
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     float MaxBulletDistance = 5000;
     TObjectPtr<ABasePlayerController> BasePlayerController;
@@ -57,6 +70,9 @@ private:
     FTimerHandle FireRateTimerHandle;
 
     bool bCanShoot = true;
+    bool bIsPrimaryEquipped = true;
     bool bIsDead = false;
+    bool bIsShooting = false;
+    bool bIsReloading = false;
     void Die();
 };
