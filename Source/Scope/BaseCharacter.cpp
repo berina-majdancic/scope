@@ -19,7 +19,7 @@ void ABaseCharacter::BeginPlay()
         PrimaryWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("hand_r"));
         PrimaryWeapon->SetOwner(this);
         PrimaryWeapon->UpdateAmmo();
-        PrimaryWeapon->SetHidden(true);
+        PrimaryWeapon->SetActorHiddenInGame(true);
         bIsPrimaryEquipped = false;
     }
     if (SecondaryWeaponClass) {
@@ -104,6 +104,15 @@ bool ABaseCharacter::getIsShooting()
 bool ABaseCharacter::getIsReloading()
 {
     return bIsReloading;
+}
+
+void ABaseCharacter::SwitchWeapon()
+{
+    if (PrimaryWeapon)
+        PrimaryWeapon->SetActorHiddenInGame(bIsPrimaryEquipped);
+    if (SecondaryWeapon)
+        SecondaryWeapon->SetActorHiddenInGame(!bIsPrimaryEquipped);
+    bIsPrimaryEquipped = !bIsPrimaryEquipped;
 }
 
 float ABaseCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)

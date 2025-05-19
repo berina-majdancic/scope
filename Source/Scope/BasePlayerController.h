@@ -40,6 +40,8 @@ protected:
     void Crouch(const FInputActionValue& Value);
     void Reload(const FInputActionValue& Value);
     void PauseMenuSwitch(const FInputActionValue& Value);
+    void SwitchWeapon(const FInputActionValue& Value);
+
     void MainMenuDisplay();
     AActor* FindMainMenuCamera();
 
@@ -65,6 +67,8 @@ private:
     TObjectPtr<UInputAction> CrouchAction;
     UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputAction> ReloadAction;
+    UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UInputAction> WeaponSwitchAction;
     UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputMappingContext> PlayerMappingContext;
     UPROPERTY(EditDefaultsOnly, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))

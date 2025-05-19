@@ -35,6 +35,7 @@ void ABasePlayerController::SetupInputComponent()
         EnhancedInput->BindAction(CrouchAction, ETriggerEvent::Completed, this, &ABasePlayerController::Sprint);
         EnhancedInput->BindAction(ReloadAction, ETriggerEvent::Completed, this, &ABasePlayerController::Reload);
         EnhancedInput->BindAction(MainMenuAction, ETriggerEvent::Started, this, &ABasePlayerController::PauseMenuSwitch);
+        EnhancedInput->BindAction(WeaponSwitchAction, ETriggerEvent::Triggered, this, &ABasePlayerController::SwitchWeapon);
     }
 }
 bool ABasePlayerController::IsCrouching() const
@@ -115,6 +116,10 @@ void ABasePlayerController::PauseMenuSwitch(const FInputActionValue& Value)
             }
         }
     }
+}
+void ABasePlayerController::SwitchWeapon(const FInputActionValue& Value)
+{
+    CurrentCharacter->SwitchWeapon();
 }
 void ABasePlayerController::MainMenuDisplay()
 {
