@@ -89,6 +89,14 @@ void ABaseCharacter::Reload()
             SecondaryWeapon->Reload();
     }
 }
+void ABaseCharacter::SwitchWeaponLogic()
+{
+    if (PrimaryWeapon)
+        PrimaryWeapon->SetActorHiddenInGame(bIsPrimaryEquipped);
+    if (SecondaryWeapon)
+        SecondaryWeapon->SetActorHiddenInGame(!bIsPrimaryEquipped);
+    bIsPrimaryEquipped = !bIsPrimaryEquipped;
+}
 void ABaseCharacter::setIsShooting(bool isShooting)
 {
     bIsShooting = isShooting;
@@ -108,11 +116,8 @@ bool ABaseCharacter::getIsReloading()
 
 void ABaseCharacter::SwitchWeapon()
 {
-    if (PrimaryWeapon)
-        PrimaryWeapon->SetActorHiddenInGame(bIsPrimaryEquipped);
-    if (SecondaryWeapon)
-        SecondaryWeapon->SetActorHiddenInGame(!bIsPrimaryEquipped);
-    bIsPrimaryEquipped = !bIsPrimaryEquipped;
+    PlaySwitchWeaponAnimation();
+    GetWorld()->GetTimerManager().SetTimer(SwitchWeaponTimerHandle, this, &ABaseCharacter::SwitchWeaponLogic, SwitchTime, false);
 }
 
 float ABaseCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
