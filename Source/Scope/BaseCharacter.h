@@ -28,6 +28,11 @@ public:
     void PlayShootingAnimation();
     UFUNCTION(BlueprintImplementableEvent)
     void PlayReloadAnimation(float ReloadTime);
+    UFUNCTION(BlueprintImplementableEvent)
+    void PlaySwitchWeaponAnimation();
+    UFUNCTION()
+    void SwitchWeaponLogic();
+
     UFUNCTION(BlueprintCallable)
     void setIsShooting(bool isShooting);
     UFUNCTION(BlueprintCallable)
@@ -63,6 +68,8 @@ private:
     TSubclassOf<AWeapon> SecondaryWeaponClass;
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     float MaxBulletDistance = 5000;
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    float SwitchTime = 0.5f;
     TObjectPtr<ABasePlayerController> BasePlayerController;
     UPROPERTY(EditDefaultsOnly, Category = "Health")
     float Health = 100;
@@ -75,5 +82,6 @@ private:
     bool bIsDead = false;
     bool bIsShooting = false;
     bool bIsReloading = false;
+    FTimerHandle SwitchWeaponTimerHandle;
     void Die();
 };
