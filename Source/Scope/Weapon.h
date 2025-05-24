@@ -14,10 +14,13 @@ class SCOPE_API AWeapon : public AActor {
 
 public:
     AWeapon();
+
+    UFUNCTION(BlueprintCallable)
+    void setAmmo(int NewAmmo) { Ammo = NewAmmo; }
     void Shoot();
     void Reload();
     void Tick(float DeltaTime) override;
-    void UpdateAmmo();
+    void UpdateAmmoHUD();
     void GetBasePlayerController();
 
 protected:

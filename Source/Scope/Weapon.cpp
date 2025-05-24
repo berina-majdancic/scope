@@ -31,7 +31,7 @@ void AWeapon::Shoot()
         return;
     }
     Ammo--;
-    UpdateAmmo();
+    UpdateAmmoHUD();
     if (!CharacterOwner)
         return;
     AddRecoil();
@@ -50,7 +50,7 @@ void AWeapon::FinishReload()
 {
     Ammo = MaxAmmo;
     bIsReloading = false;
-    UpdateAmmo();
+    UpdateAmmoHUD();
 }
 
 void AWeapon::Tick(float DeltaTime)
@@ -65,7 +65,7 @@ void AWeapon::Tick(float DeltaTime)
     }
 }
 
-void AWeapon::UpdateAmmo()
+void AWeapon::UpdateAmmoHUD()
 {
     if (!BasePlayerController)
         GetBasePlayerController();
@@ -137,7 +137,7 @@ FHitResult AWeapon::Trace()
     FVector StartLocation = Muzzle->GetComponentLocation();
     FVector EndLocation = ViewPointLoc + ViewPointRot.Vector() * MaxBulletDistance;
     FHitResult HitResultCur;
-    GetWorld()->LineTraceSingleByChannel(HitResultCur, StartLocation, EndLocation, ECC_GameTraceChannel1);
+    GetWorld()->LineTraceSingleByChannel(HitResultCur, ViewPointLoc + ViewPointRot.Vector() * 100, EndLocation, ECC_GameTraceChannel1);
     return HitResultCur;
 }
 
