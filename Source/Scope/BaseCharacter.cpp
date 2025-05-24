@@ -18,7 +18,8 @@ void ABaseCharacter::BeginPlay()
         PrimaryWeapon = GetWorld()->SpawnActor<AWeapon>(PrimaryWeaponClass);
         PrimaryWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("hand_r"));
         PrimaryWeapon->SetOwner(this);
-        PrimaryWeapon->UpdateAmmo();
+        if (bIsPrimaryEquipped)
+            PrimaryWeapon->UpdateAmmoHUD();
         PrimaryWeapon->SetActorHiddenInGame(true);
         bIsPrimaryEquipped = false;
     }
@@ -26,7 +27,8 @@ void ABaseCharacter::BeginPlay()
         SecondaryWeapon = GetWorld()->SpawnActor<AWeapon>(SecondaryWeaponClass);
         SecondaryWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("hand_r"));
         SecondaryWeapon->SetOwner(this);
-        SecondaryWeapon->UpdateAmmo();
+        if (!bIsPrimaryEquipped)
+            SecondaryWeapon->UpdateAmmoHUD();
     }
     if (GetController())
         BasePlayerController = Cast<ABasePlayerController>(GetController());
@@ -79,6 +81,11 @@ bool ABaseCharacter::GetIsDead() const
     return bIsDead;
 }
 
+bool ABaseCharacter::GetIsPrimaryEquipped() const
+{
+    return bIsPrimaryEquipped;
+}
+
 void ABaseCharacter::Reload()
 {
     if (bIsPrimaryEquipped) {
@@ -96,6 +103,9 @@ void ABaseCharacter::SwitchWeaponLogic()
     if (SecondaryWeapon)
         SecondaryWeapon->SetActorHiddenInGame(!bIsPrimaryEquipped);
     bIsPrimaryEquipped = !bIsPrimaryEquipped;
+    AWeapon* CurrentWeapon = bIsPrimaryEquipped ? PrimaryWeapon : SecondaryWeapon;
+    if (CurrentWeapon)
+        CurrentWeapon->UpdateAmmoHUD();
 }
 void ABaseCharacter::setIsShooting(bool isShooting)
 {

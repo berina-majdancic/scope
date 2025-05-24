@@ -23,6 +23,8 @@ public:
     bool GetIsDead() const;
 
     UFUNCTION(BlueprintCallable)
+    bool GetIsPrimaryEquipped() const;
+    UFUNCTION(BlueprintCallable)
     void Reload();
     UFUNCTION(BlueprintImplementableEvent)
     void PlayShootingAnimation();
