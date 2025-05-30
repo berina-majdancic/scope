@@ -24,6 +24,16 @@ Game/Belica/Characters/Heroes/Belica/Animations/M_Neutral_Crouch_Idle_Turn_180_L
 /Content/AnimStarterPack
 /Content/Interaction/Characters/UE4Mannequin
 /Content/Weapons/Scifi_Cannon
-/Content/Audio
+/Content/Audio/Foley
+/Content/Audio/Mix
 /Content/Characters
 /Content/Misc
+/Content/Blueprints/AnimModifiers
+/Content/Blueprints/AnimNotifies
+/Content/FirstPerson
+/Content/FPWeapon
+/Content/FirstPersonArms
+/Content/Environment/Maps/*BuiltData.uasset
+/Content/Fab
+/Content/LevelPrototyping
+/Content/Interaction/Weapons/Revolver
