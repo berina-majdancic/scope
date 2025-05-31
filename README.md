@@ -29,28 +29,19 @@ Robots are coming to “upgrade” your home into a controlled smart city—unle
   - **Body shots** – standard damage  
   - **Leg shots** – reduced damage  
 -  **Character Controller** – Supports:
-  - Walking, running, crouching, jumping  
+  - Walking, running, crouching, jumping, turning in place  
   - Smooth **turn-in-place** logic and animations  
 -  **Custom Animation Blueprint** – Dynamic blendspaces and state machines configured for all of the above, no root motion
 -  **HUD** – Crosshair, health, and ammo display  
 -  **SciFi Map** – A free asset customized to fit the project needs
 -  **Weapon Fire Rate**
+-  **Weapon switching**
+-  **Enemy Outline**
+-  **Sounds for shooting, walking, running**
 
-🛠️ Current Features
-- Main Menu
-- Movement made with animations blendspaces and state machines
-- Shooting
-- Damage
-- Death
-- AI - follow the player and shoot him
-- HUD
-- SciFi Environment
 
 🧪 Coming soon:
 -  Smarter AI
 -  Inverse Kinematics
--  Weapon switching and inventory system
--  Currency and buying system
 -  Explosion device planting and defusing  
--  Sound
--  Online multiplayer 
+
