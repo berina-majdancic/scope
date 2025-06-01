@@ -34,6 +34,8 @@ public:
     void PlaySwitchWeaponAnimation();
     UFUNCTION()
     void SwitchWeaponLogic();
+    UFUNCTION(BlueprintImplementableEvent)
+    void OnDeath();
 
     UFUNCTION(BlueprintCallable)
     void setIsShooting(bool isShooting);

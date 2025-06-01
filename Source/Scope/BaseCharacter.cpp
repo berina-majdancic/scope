@@ -150,6 +150,7 @@ void ABaseCharacter::Die()
 {
     if (bIsDead)
         return;
+    OnDeath();
     bIsDead = true;
     if (APlayerController* PC = Cast<APlayerController>(GetController()))
         DisableInput(PC);
