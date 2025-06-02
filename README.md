@@ -21,6 +21,7 @@ Robots are coming to “upgrade” your home into a controlled smart city—unle
 
 ## 🛠️ Current Features
 
+-  **Optimization** – Baked lighting and LODs
 -  **Main Menu** – Start and exit the game 
 -  **Shooting Mechanics** – Bullet physics, hit detection, recoil, Niagara effects  
 -  **Basic AI** – Patrol, detect, and attack behaviors  
