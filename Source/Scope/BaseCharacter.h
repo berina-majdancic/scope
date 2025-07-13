@@ -45,6 +45,8 @@ public:
     bool getIsShooting();
     UFUNCTION(BlueprintCallable)
     bool getIsReloading();
+    UFUNCTION(BlueprintCallable)
+    AWeapon* GetWeapon() const;
     void SwitchWeapon();
 
     void UpdateHealthHUD();

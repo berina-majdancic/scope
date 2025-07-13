@@ -124,6 +124,11 @@ bool ABaseCharacter::getIsReloading()
     return bIsReloading;
 }
 
+AWeapon* ABaseCharacter::GetWeapon() const
+{
+    return bIsPrimaryEquipped ? PrimaryWeapon : SecondaryWeapon;
+}
+
 void ABaseCharacter::SwitchWeapon()
 {
     PlaySwitchWeaponAnimation();
